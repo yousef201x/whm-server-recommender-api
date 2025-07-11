@@ -31,7 +31,7 @@ class ServerController extends Controller
 
         $response = Http::withHeaders([
             'Authorization' => 'whm ' . $server->user . ':' . $server->token,
-        ])->get("https://{$server->hostname}:2087/json-api/listaccts?api.version=1");
+        ])->timeout(5)->retry(2, 200)->get("https://{$server->hostname}:2087/json-api/listaccts?api.version=1");
 
         if ($response->successful()) {
             return count($response->json('data.acct') ?? []);
